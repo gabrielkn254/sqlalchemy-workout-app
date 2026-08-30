@@ -6,7 +6,7 @@ from datetime import date, datetime
 db = SQLAlchemy()
 
 # Exercise model
-class Exercise(db.model):
+class Exercise(db.Model):
     __tablename__ = "exercises"
 
     id = db.Column(db.Integer, primary_key = True)
@@ -14,8 +14,10 @@ class Exercise(db.model):
     category = db.Column(db.String(60), nullable=False)
     equipment_needed = db.Column(db.Boolean, default=False, nullable=False)
 
-    workout = db.relationship("Workout", secondary="workout_exercise", backref=db.backref("exercises", viewonly=True))
+    # create exercise:workout (M:M) relationship via workoutexercises
+    workout = db.relationship("Workout", secondary="workout_exercises", backref=db.backref("exercises", viewonly=True))
 
+    # validate category column
     @validates("category")
     def validate_category(self, key, value):
         allowed_categories = ["Strength", "Cardio", "Flexibility", "Balance"]
@@ -25,7 +27,7 @@ class Exercise(db.model):
 
 
 # Workout model
-class Workout(db.model):
+class Workout(db.Model):
     __tablename__ = "workouts"
 
     id = db.Column(db.Integer, primary_key = True)
@@ -33,6 +35,7 @@ class Workout(db.model):
     duration_minutes = db.Column(db.Integer)
     notes = db.Column(db.Text)
 
+    # validate date column
     @validates("date")
     def validate_date(self, key, value):
         
@@ -43,7 +46,7 @@ class Workout(db.model):
 
 
 # WorkoutExercise model
-class WorkoutExercises(db.model):
+class WorkoutExercises(db.Model):
     __tablename__ = "workout_exercises"
 
     id = db.Column(db.Integer, primary_key = True)
@@ -55,5 +58,6 @@ class WorkoutExercises(db.model):
     sets = db.Column(db.Integer, db.CheckConstraint("sets > 0", name="check_sets_positive"))
     duration_seconds = db.Column(db.Integer, db.CheckConstraint("duration_seconds >= 0", name="check_duration_positive"))
 
+    # Create M:M relationships for workout and exercises
     workout = db.relationship("Workout", backref=db.backref("workoutexercises", cascade="all, delete-orphan"))
     exercise = db.relationship("Exercise", backref=db.backref("workoutexercises", cascade="all, delete-orphan"))
