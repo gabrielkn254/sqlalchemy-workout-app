@@ -36,25 +36,18 @@ Follow these exact steps from the **root directory** of the repository to initia
 
 1. Active and Install Dependencies
 This project uses a local virtual environment configuration. Activate it and install dependencies:
-```bash
-# Activate your local virtual environment
-source .venv/bin/activate
 
-# Ensure your required packages are fully installed
-pip install Flask Flask-SQLAlchemy Flask-Migrate marshmallow
+```bash
+pipenv install
 ```
 
 2. Initialize and Synchronize the Database
 Because the application configures a relative database path from inside a subdirectory, run your migration scripts directly from the command line while specifying the precise application path:
+
 ```bash
-# Initialize the migration configuration folder structure
-flask --app server/app.py db init
+flask db migrate -m "message here"
 
-# Generate a clean migration script blueprint matching the models
-flask --app server/app.py db migrate -m "initialize fitness tracking schema"
-
-# Physically execute the structural schema changes onto disk (app.db)
-flask --app server/app.py db upgrade
+flask db upgrade
 ```
 
 3. Seed the Target Database
