@@ -14,8 +14,10 @@ class Exercise(db.Model):
     category = db.Column(db.String(60), nullable=False)
     equipment_needed = db.Column(db.Boolean, default=False, nullable=False)
 
+    # create exercise:workout (M:M) relationship via workoutexercises
     workout = db.relationship("Workout", secondary="workout_exercise", backref=db.backref("exercises", viewonly=True))
 
+    # validate category column
     @validates("category")
     def validate_category(self, key, value):
         allowed_categories = ["Strength", "Cardio", "Flexibility", "Balance"]
@@ -33,6 +35,7 @@ class Workout(db.Model):
     duration_minutes = db.Column(db.Integer)
     notes = db.Column(db.Text)
 
+    # validate date column
     @validates("date")
     def validate_date(self, key, value):
         
@@ -55,5 +58,6 @@ class WorkoutExercises(db.Model):
     sets = db.Column(db.Integer, db.CheckConstraint("sets > 0", name="check_sets_positive"))
     duration_seconds = db.Column(db.Integer, db.CheckConstraint("duration_seconds >= 0", name="check_duration_positive"))
 
+    # Create M:M relationships for workout and exercises
     workout = db.relationship("Workout", backref=db.backref("workoutexercises", cascade="all, delete-orphan"))
     exercise = db.relationship("Exercise", backref=db.backref("workoutexercises", cascade="all, delete-orphan"))
