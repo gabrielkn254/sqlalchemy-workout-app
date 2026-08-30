@@ -15,7 +15,7 @@ class Exercise(db.Model):
     equipment_needed = db.Column(db.Boolean, default=False, nullable=False)
 
     # create exercise:workout (M:M) relationship via workoutexercises
-    workout = db.relationship("Workout", secondary="workout_exercise", backref=db.backref("exercises", viewonly=True))
+    workout = db.relationship("Workout", secondary="workout_exercises", backref=db.backref("exercises", viewonly=True))
 
     # validate category column
     @validates("category")
