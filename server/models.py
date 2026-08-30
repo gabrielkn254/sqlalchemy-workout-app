@@ -15,7 +15,7 @@ class Exercise(db.Model):
     equipment_needed = db.Column(db.Boolean, default=False, nullable=False)
 
     # create exercise:workout (M:M) relationship via workoutexercises
-    workout = db.relationship("Workout", secondary="workout_exercises", backref=db.backref("exercises", viewonly=True))
+    workouts = db.relationship("Workout", secondary="workout_exercises", backref=db.backref("exercises", viewonly=True))
 
     # validate category column
     @validates("category")
@@ -52,7 +52,7 @@ class WorkoutExercises(db.Model):
     id = db.Column(db.Integer, primary_key = True)
 
     workout_id = db.Column(db.Integer, db.ForeignKey("workouts.id"), nullable=False)
-    excercise_id = db.Column(db.Integer, db.ForeignKey("exercises.id"), nullable=False)
+    exercise_id = db.Column(db.Integer, db.ForeignKey("exercises.id"), nullable=False)
 
     reps = db.Column(db.Integer, db.CheckConstraint("reps > 0", name="check_reps_positive"))
     sets = db.Column(db.Integer, db.CheckConstraint("sets > 0", name="check_sets_positive"))

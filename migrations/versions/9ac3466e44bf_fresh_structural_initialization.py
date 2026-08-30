@@ -1,8 +1,8 @@
-"""initial commit
+"""fresh structural initialization
 
-Revision ID: 885776a1b2e2
+Revision ID: 9ac3466e44bf
 Revises: 
-Create Date: 2026-08-30 20:52:19.134580
+Create Date: 2026-08-30 22:17:56.712720
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '885776a1b2e2'
+revision = '9ac3466e44bf'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -35,11 +35,11 @@ def upgrade():
     op.create_table('workout_exercises',
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('workout_id', sa.Integer(), nullable=False),
-    sa.Column('excercise_id', sa.Integer(), nullable=False),
+    sa.Column('exercise_id', sa.Integer(), nullable=False),
     sa.Column('reps', sa.Integer(), nullable=True),
     sa.Column('sets', sa.Integer(), nullable=True),
     sa.Column('duration_seconds', sa.Integer(), nullable=True),
-    sa.ForeignKeyConstraint(['excercise_id'], ['exercises.id'], ),
+    sa.ForeignKeyConstraint(['exercise_id'], ['exercises.id'], ),
     sa.ForeignKeyConstraint(['workout_id'], ['workouts.id'], ),
     sa.PrimaryKeyConstraint('id')
     )
