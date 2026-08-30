@@ -1,6 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import validates
-from datetime import datetime
+from datetime import date, datetime
 
 # create db
 db = SQLAlchemy()
@@ -16,6 +16,13 @@ class Exercise(db.model):
 
     workout = db.relationship("Workout", secondary="workout_exercise", backref=db.backref("exercises", viewonly=True))
 
+    @validates("category")
+    def validate_category(self, key, value):
+        allowed_categories = ["Strength", "Cardio", "Flexibility", "Balance"]
+        if value not in allowed_categories:
+            raise ValueError(f"Category must be one of: {', '.join(allowed_categories)}")
+        return value
+
 
 # Workout model
 class Workout(db.model):
@@ -25,6 +32,14 @@ class Workout(db.model):
     date = db.Column(db.Date, nullable=False)
     duration_minutes = db.Column(db.Integer)
     notes = db.Column(db.Text)
+
+    @validates("date")
+    def validate_date(self, key, value):
+        
+        input_date = datetime.strptime(value, "%Y-%m-%d").date() if isinstance(value, str) else value
+        if input_date > date.today():
+            raise ValueError("Workout date cannot be set in the future.")
+        return input_date
 
 
 # WorkoutExercise model
@@ -36,9 +51,9 @@ class WorkoutExercises(db.model):
     workout_id = db.Column(db.Integer, db.ForeignKey("workouts.id"), nullable=False)
     excercise_id = db.Column(db.Integer, db.ForeignKey("exercises.id"), nullable=False)
 
-    reps = db.Column(db.Integer)
-    sets = db.Column(db.Integer)
-    duration_seconds = db.Column(db.Integer)
+    reps = db.Column(db.Integer, db.CheckConstraint("reps > 0", name="check_reps_positive"))
+    sets = db.Column(db.Integer, db.CheckConstraint("sets > 0", name="check_sets_positive"))
+    duration_seconds = db.Column(db.Integer, db.CheckConstraint("duration_seconds >= 0", name="check_duration_positive"))
 
     workout = db.relationship("Workout", backref=db.backref("workoutexercises", cascade="all, delete-orphan"))
     exercise = db.relationship("Exercise", backref=db.backref("workoutexercises", cascade="all, delete-orphan"))
