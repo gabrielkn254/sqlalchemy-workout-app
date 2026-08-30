@@ -6,7 +6,7 @@ from datetime import date, datetime
 db = SQLAlchemy()
 
 # Exercise model
-class Exercise(db.model):
+class Exercise(db.Model):
     __tablename__ = "exercises"
 
     id = db.Column(db.Integer, primary_key = True)
@@ -25,7 +25,7 @@ class Exercise(db.model):
 
 
 # Workout model
-class Workout(db.model):
+class Workout(db.Model):
     __tablename__ = "workouts"
 
     id = db.Column(db.Integer, primary_key = True)
@@ -43,7 +43,7 @@ class Workout(db.model):
 
 
 # WorkoutExercise model
-class WorkoutExercises(db.model):
+class WorkoutExercises(db.Model):
     __tablename__ = "workout_exercises"
 
     id = db.Column(db.Integer, primary_key = True)
